@@ -1,9 +1,0 @@
-.cart {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-
-.cart i {
-  font-size: 24px;
-}

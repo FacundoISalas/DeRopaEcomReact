@@ -1,46 +1,63 @@
-import React, { useEffect, useRef } from 'react'; // eslint-disable-line
+import React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Hidden from '@mui/material/Hidden';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CartWidget from './CartWidget';
 
 const Navbar = () => {
-  const dropdownRef = useRef(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  useEffect(() => {
-    M.AutoInit(); // eslint-disable-line
-    M.Dropdown.init(dropdownRef.current, { constrainWidth: false }); // eslint-disable-line
-  }, []);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
-    <nav>
-      <div className="nav-wrapper">
-        <img width={32} height={32} src="src\assets\jacket.svg" alt="de ropa logo"/>
-        <a href="#" className="brand-logo">De ropa</a>
-        <a href="#" data-target="nav-mobile" className="sidenav-trigger">
-          <i className="material-icons">menu</i>
-        </a>
-        <ul id="nav-mobile" className="right hide-on-med-and-down">
-          <li>
-            <a
-              className="dropdown-trigger"
-              href="#"
-              data-target="category-dropdown"
-            >
-              Categorias <i className="material-icons right">arrow_drop_down</i>
-            </a>
-            <ul id="category-dropdown" className="dropdown-content">
-              <li><a href="#">Camisas</a></li>
-              <li><a href="#">Camperas</a></li>
-              <li><a href="#">Jeans</a></li>
-              <li><a href="#">Zapatillas</a></li>
-            </ul>
-          </li>
-          <li>
-            <a>
-              <CartWidget />
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
+    <AppBar position="static">
+      <Toolbar>
+        <img width={32} height={32} src="src\assets\jacket.svg" alt="De ropa logo" />
+        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} ml={2}>
+          De ropa
+        </Typography>
+        <Hidden mdUp>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={handleMenuOpen}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
+        <Hidden mdDown>
+          <Button color="inherit" onClick={handleMenuOpen}>
+            Categorias <ArrowDropDownIcon />
+          </Button>
+        </Hidden>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem>Camisas</MenuItem>
+          <MenuItem>Camperas</MenuItem>
+          <MenuItem>Jeans</MenuItem>
+          <MenuItem>Zapatillas</MenuItem>
+        </Menu>
+        <CartWidget itemCount={5}/>
+      </Toolbar>
+    </AppBar>
   );
 };
 

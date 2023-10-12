@@ -1,12 +1,14 @@
-import React from 'react'; // eslint-disable-line
-import './cartWidget.css';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-const CartWidget = () => {
+const CartWidget = ({ itemCount }) => {
   return (
-    <div className="cart">
-      <i className="material-icons">shopping_cart</i>
-      <p> 1 </p>
-    </div>
+    <IconButton color="inherit">
+      <Badge badgeContent={itemCount} color="secondary">
+        <ShoppingCartIcon />
+      </Badge>
+    </IconButton>
   );
 };
 
