@@ -1,24 +1,27 @@
-import React, { useEffect, useState } from 'react'; // eslint-disable-line
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ItemList from './ItemList';
 
-// eslint-disable-next-line react/prop-types
 const ItemListContainer = ({ greetings }) => {
-  const { categoryId } = useParams()
-
-  const [products, setProducts] = useState([])
+  const { categoryId } = useParams();
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    if (categoryId) {
-      console.log('callByCategory');
-    } else {
-      console.log('callAll');
-    }
-  });
+    const apiUrl = categoryId
+      ? `https://fakestoreapi.com/products/category/${categoryId}`
+      : 'https://fakestoreapi.com/products';
 
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data);
+      });
+  }, [categoryId]);
 
   return (
     <div>
       <h2>{greetings}</h2>
+      <ItemList products={products} />
     </div>
   );
 };

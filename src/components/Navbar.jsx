@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -10,9 +10,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Hidden from '@mui/material/Hidden';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CartWidget from './CartWidget';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [categories, setCategories] = useState([]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,13 +24,27 @@ const Navbar = () => {
     setAnchorEl(null);
   };
 
+  useEffect(() => {
+    fetch('https://fakestoreapi.com/products/categories')
+      .then((res) => res.json())
+      .then((data) => {
+        const formattedCategories = data.map((category, index) => ({
+          id: index,
+          name: category,
+        }));
+        setCategories(formattedCategories);
+      });
+  }, []);
+
   return (
     <AppBar position="static">
       <Toolbar>
+      <Link to={'/'} style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', textDecoration: 'none', color: 'inherit' }}>
         <img width={32} height={32} src="src\assets\jacket.svg" alt="De ropa logo" />
-        <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} ml={2}>
+        <Typography variant="h5" component="div" ml={2}>
           De ropa
         </Typography>
+      </Link>
         <Hidden mdUp>
           <IconButton
             edge="start"
@@ -50,12 +66,13 @@ const Navbar = () => {
           open={Boolean(anchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem>Camisas</MenuItem>
-          <MenuItem>Camperas</MenuItem>
-          <MenuItem>Jeans</MenuItem>
-          <MenuItem>Zapatillas</MenuItem>
+          {categories.map((category) => (
+            <Link key={category.id} to={`/category/${category.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MenuItem>{category.name}</MenuItem>
+            </Link>
+          ))}
         </Menu>
-        <CartWidget itemCount={5}/>
+        <CartWidget itemCount={5} />
       </Toolbar>
     </AppBar>
   );
