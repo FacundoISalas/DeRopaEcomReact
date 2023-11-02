@@ -8,7 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 const ItemQuantity = ({ itemName }) => {
   const [quantity, setQuantity] = useState(1);
-  const { addItemToCart } = useContext(CartContext);
+  const { addToCart } = useContext(CartContext);
 
   const handleMinus = () => {
     if (quantity > 0) {
@@ -22,7 +22,7 @@ const ItemQuantity = ({ itemName }) => {
 
   const handleAddToCart = () => {
     if (quantity > 0) {
-      addItemToCart({ itemName, quantity });
+      addToCart({ itemName, quantity });
     }
   };
 

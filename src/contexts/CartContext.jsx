@@ -10,10 +10,28 @@ const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 const cartReducer = (state, action) => {
   switch (action.type) {
     case ADD_TO_CART:
-      return {
-        ...state,
-        cartItems: [...state.cartItems, action.payload],
-      };
+      const itemIndex = state.cartItems.findIndex((item) => item.itemName === action.payload.itemName); // eslint-disable-line
+      if (itemIndex !== -1) {
+        if (action.payload.quantity >= 1) {
+          const updatedCartItems = [...state.cartItems];
+          updatedCartItems[itemIndex] = {
+            ...updatedCartItems[itemIndex],
+            quantity: updatedCartItems[itemIndex].quantity + action.payload.quantity,
+          };
+          return {
+            ...state,
+            cartItems: updatedCartItems,
+          };
+        }
+      } else {
+        if (action.payload.quantity >= 1) {
+          return {
+            ...state,
+            cartItems: [...state.cartItems, action.payload],
+          };
+        }
+      }
+      return state;
     case REMOVE_FROM_CART:
       return {
         ...state,
