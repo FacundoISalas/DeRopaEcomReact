@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from 'react'; // eslint-disable-line
+import React, { createContext, useContext, useReducer, useEffect } from 'react'; // eslint-disable-line
 
 const initialCartState = {
   cartItems: [],
@@ -6,6 +6,7 @@ const initialCartState = {
 
 const ADD_TO_CART = 'ADD_TO_CART';
 const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+const CART_STORAGE_KEY = 'cartData';
 
 const cartReducer = (state, action) => {
   switch (action.type) {
@@ -45,8 +46,15 @@ const cartReducer = (state, action) => {
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, initialCartState);
+  const storedCartData = JSON.parse(localStorage.getItem(CART_STORAGE_KEY)) || initialCartState;
 
+  
+  const [state, dispatch] = useReducer(cartReducer, storedCartData);
+  
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
+  }, [state])
+  
   const addToCart = (item) => {
     dispatch({ type: ADD_TO_CART, payload: item });
   };
