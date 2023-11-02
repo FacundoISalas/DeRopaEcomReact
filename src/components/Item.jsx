@@ -6,6 +6,9 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
+// Import the ItemQuantity component
+import ItemQuantity from './ItemQuantity.jsx';
+
 const Item = ({ product, isItemDetail }) => {
   const { title, image, description, price, id } = product;
 
@@ -27,14 +30,19 @@ const Item = ({ product, isItemDetail }) => {
           <Typography variant="body2" color="textSecondary">
             {description}
           </Typography>
-          <div style={{ display: 'flex', justifyContent: 'center'}}>
-          <Typography variant="h6" color="primary">
-            ${price} ARS
-          </Typography>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography variant="h6" color="primary">
+              ${price} ARS
+            </Typography>
           </div>
-          { isItemDetail ? <span></span> : <div style={{ display: 'flex', justifyContent: 'center'}}>
-          <Link to={`/item/${id}`}><Button>Ver detalle</Button></Link>
-          </div> }
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
+            <ItemQuantity itemName={title} />
+          </div>
+          {isItemDetail ? <span></span> : <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Link to={`/item/${id}`}>
+              <Button>Ver detalle</Button>
+            </Link>
+          </div>}
         </CardContent>
       </Card>
     </div>
