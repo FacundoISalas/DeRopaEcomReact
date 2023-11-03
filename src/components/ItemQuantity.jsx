@@ -48,7 +48,7 @@ const ItemQuantity = ({ itemName }) => {
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Button onClick={handleAddToCart} disabled={quantity === 0} variant="contained" color="primary">
-          Add to Cart
+          Añadir
         </Button>
       </div>
     </div>
