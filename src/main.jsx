@@ -4,14 +4,13 @@ import App from './App.jsx'
 import { CartProvider } from './contexts/CartContext.jsx'
 import { initializeApp } from "firebase/app";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBi-fl2UwUVT17be2T4jx6Gv8k2kZ1Fr20",
-  authDomain: "ecomreactfacsalas.firebaseapp.com",
-  projectId: "ecomreactfacsalas",
-  storageBucket: "ecomreactfacsalas.appspot.com",
-  messagingSenderId: "281276654210",
-  appId: "1:281276654210:web:5762dbfc3c6f1d5588ca9b"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
 };
 
 initializeApp(firebaseConfig);
