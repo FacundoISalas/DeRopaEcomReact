@@ -1,11 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar, Alert } from '@mui/material';
+import { Grid, TextField, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar, Alert, Tooltip, IconButton } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { CartContext } from '../contexts/CartContext';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { addDoc, collection, getFirestore, updateDoc, doc } from 'firebase/firestore';
 
 const Checkout = () => {
-  const { cartItems, resetCart } = useContext(CartContext);
+  const { cartItems, removeFromCart, resetCart } = useContext(CartContext);
   const navigate = useNavigate();
   const handleSnackbarClose = () => {
     navigate('/');
@@ -176,15 +178,24 @@ const Checkout = () => {
                     </>
                     }
                 />
+                <div>
+                <Tooltip title="Eliminar item">
+                    <IconButton
+                      onClick={() => removeFromCart(item)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                    </Tooltip>
+                </div>
                 </ListItem>
             ))}
             </List>
             <Typography variant="h6" gutterBottom>
               Precio total: ${totalPrice}
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled || cartItems.length === 0}>
+            <LoadingButton loading={isPosting}  variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled || cartItems.length === 0 || isPosting}>
               Confirmar compra
-            </Button>
+            </LoadingButton>
             <Snackbar
               open={isPosting}
               autoHideDuration={3000}
