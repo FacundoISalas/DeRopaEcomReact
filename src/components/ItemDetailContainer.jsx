@@ -19,11 +19,11 @@ const ItemDetailContainer = () => {
             const data = docSnapshot.data();
             setProduct(data);
           } else {
-            console.log("Item not found");
+            console.log("Item no encontrado");
           }
         })
         .catch((error) => {
-          console.error('Error fetching item:', error);
+          console.error('Error intentando recuperar el item:', error);
         });
     }
   }, [itemId]);

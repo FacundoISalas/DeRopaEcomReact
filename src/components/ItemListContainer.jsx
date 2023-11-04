@@ -23,7 +23,7 @@ const ItemListContainer = ({ greetings }) => {
           setProducts(productsData);
         })
         .catch((error) => {
-          console.error('Error fetching items:', error);
+          console.error('Error al intentar recuperar items', error);
         });
     } else {
       const categoryRef = doc(db, 'categories', categoryId);
@@ -37,7 +37,7 @@ const ItemListContainer = ({ greetings }) => {
           setProducts(productsData);
         })
         .catch((error) => {
-          console.error('Error fetching items:', error);
+          console.error('Error al intentar recuperar items:', error);
         });
     }
   }, [categoryId]);
