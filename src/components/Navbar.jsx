@@ -11,6 +11,7 @@ import Hidden from '@mui/material/Hidden';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CartWidget from './CartWidget';
 import { Link } from 'react-router-dom';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,15 +26,16 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    fetch('https://fakestoreapi.com/products/categories')
-      .then((res) => res.json())
-      .then((data) => {
-        const formattedCategories = data.map((category, index) => ({
-          id: index,
-          name: category,
-        }));
-        setCategories(formattedCategories);
+    const db = getFirestore();
+    const categoriesCollection = collection(db, 'categories');
+    
+    getDocs(categoriesCollection).then((snapshot) => {
+      const categoryData = [];
+      snapshot.forEach((doc) => {
+        categoryData.push({ id: doc.id, ...doc.data() });
       });
+      setCategories(categoryData);
+    });
   }, []);
 
   return (
@@ -67,7 +69,7 @@ const Navbar = () => {
           onClose={handleMenuClose}
         >
           {categories.map((category) => (
-            <Link key={category.id} to={`/category/${category.name}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link key={category.id} to={`/category/${category.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <MenuItem>{category.name}</MenuItem>
             </Link>
           ))}
