@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@mui/material';
+import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
 
 const Checkout = () => {
-  const { cartItems } = useContext(CartContext);
+  const { cartItems, resetCart } = useContext(CartContext);
 
   const totalPrice = cartItems.reduce((total, item) => {
     return total + item.quantity * item.itemPrice;
@@ -12,12 +13,11 @@ const Checkout = () => {
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
-  const [nombreError, setNombreError] = useState(''); // Initialize with an empty string
-  const [telefonoError, setTelefonoError] = useState(''); // Initialize with an empty string
-  const [emailError, setEmailError] = useState(''); // Initialize with an empty string
+  const [nombreError, setNombreError] = useState('');
+  const [telefonoError, setTelefonoError] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [isDisabled, setIsDisabled] = useState(true);
 
-  // Initialize error messages based on initial values
   useEffect(() => {
     if (nombre.trim() === '') {
       setNombreError('el campo es requerido');
@@ -62,7 +62,20 @@ const Checkout = () => {
       setEmailError('');
     }
   };
-
+  const setDatosCompra = (items) => {
+    let arrayCompra = [];
+    for (let i = 0; i < items.length; i++) {
+        const e = items[i];
+        const objCompra = {
+            name: e.itemName,
+            description: e.itemDescription,
+            price: e.itemPrice,
+            quantity: e.quantity,
+        };
+        arrayCompra.push(objCompra);
+    }
+    return arrayCompra;
+}
   useEffect(() => {
     if (nombre.trim() !== '' && telefono.trim() !== '' && email.trim() !== '' && !nombreError && !telefonoError && !emailError) {
       setIsDisabled(false);
@@ -72,9 +85,16 @@ const Checkout = () => {
   }, [nombre, telefono, email, nombreError, telefonoError, emailError]);
 
   const handleConfirmOrder = () => {
-    console.log('Nombre:', nombre);
-    console.log('Telefono:', telefono);
-    console.log('Email:', email);
+    const order = {
+        datosCliente: { name: nombre, telefono: telefono, email: email },
+        datosCompra: setDatosCompra(cartItems),
+        total: totalPrice
+    };
+    const db = getFirestore();
+
+    const ordersCollection = collection(db, "orders");
+
+    addDoc(ordersCollection, order).then(({ response }) => console.log('postorder', response), resetCart());
   };
 
   return (
@@ -120,23 +140,23 @@ const Checkout = () => {
               Resumen de compra
             </Typography>
             <List>
-              {cartItems.map((item) => (
-                <ListItem key={item.id}>
-                  <ListItemAvatar>
+            {cartItems.map((item, index) => (
+                <ListItem key={item.id + index}>
+                <ListItemAvatar>
                     <Avatar alt={item.itemName} src={item.itemImage} />
-                  </ListItemAvatar>
-                  <ListItemText
+                </ListItemAvatar>
+                <ListItemText
                     primary={item.itemName}
                     secondary={
-                      <React.Fragment>
+                    <>
                         <Typography variant="body2">{item.itemDescription}</Typography>
                         <Typography variant="body2">Cantidad: {item.quantity}</Typography>
                         <Typography variant="body2">Precio: ${item.itemPrice}</Typography>
-                      </React.Fragment>
+                    </>
                     }
-                  />
+                />
                 </ListItem>
-              ))}
+            ))}
             </List>
             <Typography variant="h6" gutterBottom>
               Precio total: ${totalPrice}
@@ -144,6 +164,13 @@ const Checkout = () => {
             <Button variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled}>
               Confirmar compra
             </Button>
+            {/* <Snackbar
+                open={purchaseCompleted}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+            >
+                <Typography variant="body1">Su compra se ha procesado correctamente</Typography>
+            </Snackbar> */}
           </Paper>
         </Grid>
       </Grid>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react'; // eslint-disable-line
+import React, { createContext, useState, useContext, useReducer, useEffect } from 'react'; // eslint-disable-line
 
 const initialCartState = {
   cartItems: [],
@@ -6,6 +6,7 @@ const initialCartState = {
 
 const ADD_TO_CART = 'ADD_TO_CART';
 const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+const REMOVE_ALL_ITEMS = 'REMOVE_ALL_ITEMS';
 const CART_STORAGE_KEY = 'cartData';
 
 const cartReducer = (state, action) => {
@@ -38,6 +39,12 @@ const cartReducer = (state, action) => {
         ...state,
         cartItems: state.cartItems.filter((item) => item.itemName !== action.payload.itemName),
       };
+    case REMOVE_ALL_ITEMS:
+    return {
+      ...state,
+      cartItems: [],
+    };
+    
     default:
       return state;
   }
@@ -50,7 +57,7 @@ export const CartProvider = ({ children }) => {
 
   
   const [state, dispatch] = useReducer(cartReducer, storedCartData);
-  
+
   useEffect(() => {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state));
   }, [state])
@@ -59,13 +66,18 @@ export const CartProvider = ({ children }) => {
     dispatch({ type: ADD_TO_CART, payload: item });
   };
 
+  const resetCart = () => {
+    console.log('enterresetchart');
+    dispatch({ type: REMOVE_ALL_ITEMS });
+  };
+  
   const removeFromCart = (item) => {
     dispatch({ type: REMOVE_FROM_CART, payload: item });
   };
 
-
   return (
-    <CartContext.Provider value={{ cartItems: state.cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cartItems: state.cartItems, addToCart, removeFromCart, resetCart }}>
       {children}
     </CartContext.Provider>
   );
