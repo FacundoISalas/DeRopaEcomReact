@@ -52,8 +52,8 @@ const ItemQuantity = ({ itemName, itemImage, itemPrice, itemDescription, itemId,
         </IconButton>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button onClick={handleAddToCart} disabled={quantity === 0} variant="contained" color="primary">
-          Añadir
+        <Button onClick={handleAddToCart} disabled={quantity === 0 || itemStock === 0} variant="contained" color="primary">
+          { itemStock === 0 ? 'Item sin Stock' : 'Añadir'}
         </Button>
       </div>
     </div>

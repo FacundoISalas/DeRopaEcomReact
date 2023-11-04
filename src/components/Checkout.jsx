@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar, Alert } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
-import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, getFirestore, updateDoc, doc } from 'firebase/firestore';
 
 const Checkout = () => {
   const { cartItems, resetCart } = useContext(CartContext);
@@ -89,22 +89,33 @@ const Checkout = () => {
     }
   }, [nombre, telefono, email, nombreError, telefonoError, emailError]);
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
     setIsPosting(true);
     const order = {
-        datosCliente: { name: nombre, telefono: telefono, email: email },
-        datosCompra: setDatosCompra(cartItems),
-        total: totalPrice
+      datosCliente: { name: nombre, telefono: telefono, email: email },
+      datosCompra: setDatosCompra(cartItems),
+      total: totalPrice
     };
     const db = getFirestore();
-
-    const ordersCollection = collection(db, "orders");
-    addDoc(ordersCollection, order).then(() => {
-        setTimeout(() => {
-          resetCart();
-          setIsPosting(false);
-        }, 3100);
-      });
+    const ordersCollection = collection(db, 'orders');
+  
+    try {
+      for (const item of cartItems) {
+        console.log('itemData', item);
+        const updatedStock = item.itemStock - item.quantity;
+        const itemRef = doc(db, 'items', item.itemId);
+        await updateDoc(itemRef, { stock: updatedStock });
+      }
+      await addDoc(ordersCollection, order);
+  
+      setTimeout(() => {
+        resetCart();
+        setIsPosting(false);
+      }, 3100);
+    } catch (error) {
+      console.error('Error al intentar actualizar los datos y añadir una nueva orden:', error);
+      setIsPosting(false);
+    }
   };
 
   return (
