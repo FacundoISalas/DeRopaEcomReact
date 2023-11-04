@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar } from '@mui/material';
+import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar, Alert } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 
@@ -151,7 +151,7 @@ const Checkout = () => {
             </Typography>
             <List>
             {cartItems.map((item, index) => (
-                <ListItem key={item.id + index}>
+                <ListItem key={index}>
                 <ListItemAvatar>
                     <Avatar alt={item.itemName} src={item.itemImage} />
                 </ListItemAvatar>
@@ -175,11 +175,14 @@ const Checkout = () => {
               Confirmar compra
             </Button>
             <Snackbar
-                open={isPosting}
-                autoHideDuration={3000}
-                onClose={handleSnackbarClose}
+              open={isPosting}
+              autoHideDuration={3000}
+              onClose={handleSnackbarClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-                <Typography variant="body1">Su compra se ha procesado correctamente</Typography>
+              <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                Su compra se ha procesado correctamente, sera redirigo al inicio de la pagina.
+              </Alert>
             </Snackbar>
           </Paper>
         </Grid>
