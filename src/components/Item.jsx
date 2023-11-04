@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
-// Import the ItemQuantity component
 import ItemQuantity from './ItemQuantity.jsx';
 
 const Item = ({ product, isItemDetail }) => {
@@ -36,7 +35,7 @@ const Item = ({ product, isItemDetail }) => {
             </Typography>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
-            <ItemQuantity itemName={title} />
+            <ItemQuantity itemName={title} itemImage={image} itemPrice={price} />
           </div>
           {isItemDetail ? <span></span> : <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Link to={`/item/${id}`}>

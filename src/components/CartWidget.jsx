@@ -14,11 +14,12 @@ import Box from '@mui/material/Box';
 
 const CartWidget = () => {
   const { cartItems } = useContext(CartContext);
-  const { removeFromCart } = useCart(); // Import the removeFromCart method
+  const { removeFromCart } = useCart();
 
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const precioTotal = cartItems.reduce((total, item) => total + item.quantity * item.itemPrice, 0);
+  const fixed2PrecioTotal = precioTotal.toFixed(2);
 
-  // State to manage the visibility of the menu
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpenMenu = (event) => {
@@ -59,7 +60,7 @@ const CartWidget = () => {
                 {cartItems.map((item, index) => (
                   <ListItem key={index}>
                     <Typography variant='body1'>
-                      <b>Item:</b> {item.itemName} <b>/</b> <b>Cantidad:</b> {item.quantity}
+                      <b>Item:</b> {item.itemName} <b>/</b> <b>Cantidad:</b> {item.quantity} <b>/</b> <b>precio:</b> ${item.itemPrice}
                     </Typography>
                     <Tooltip title="Eliminar item">
                     <IconButton
@@ -75,6 +76,11 @@ const CartWidget = () => {
           ) : (
             <Typography variant='body1' style={{ textAlign: 'center' }}>No hay productos aún.</Typography>
           )}
+          <Box display="flex" justifyContent="center" marginY={ 2 }>
+            <Typography variant="h6" gutterBottom>
+              Precio total: ${fixed2PrecioTotal}
+            </Typography>
+          </Box>
           <Box display="flex" justifyContent="center" marginY={ 2 }>
             <Button variant="contained" color="primary">
               Finalizar Compra

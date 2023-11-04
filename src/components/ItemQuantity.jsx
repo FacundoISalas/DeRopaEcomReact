@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const ItemQuantity = ({ itemName }) => {
+const ItemQuantity = ({ itemName, itemImage, itemPrice }) => {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useContext(CartContext);
 
@@ -22,7 +22,7 @@ const ItemQuantity = ({ itemName }) => {
 
   const handleAddToCart = () => {
     if (quantity > 0) {
-      addToCart({ itemName, quantity });
+      addToCart({ itemName, itemPrice, itemImage, quantity });
     }
   };
 
