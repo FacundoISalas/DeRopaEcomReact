@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
 
 const CartWidget = () => {
   const { cartItems } = useContext(CartContext);
@@ -82,9 +83,11 @@ const CartWidget = () => {
             </Typography>
           </Box>
           <Box display="flex" justifyContent="center" marginY={ 2 }>
+          <Link to={`/checkout`}>
             <Button variant="contained" color="primary">
               Finalizar Compra
             </Button>
+            </Link>
           </Box>
         </div>
       </Popover>

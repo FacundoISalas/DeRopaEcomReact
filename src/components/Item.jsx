@@ -13,7 +13,7 @@ const Item = ({ product, isItemDetail }) => {
   const { name, image, description, price, id } = product;
 
   return (
-    <div style={{ height: '100%' }}>
+    <div style={{ height: '100%', marginTop: '25px' }}>
       <Card style={{ height: '100%' }}>
         <CardMedia
           component="img"
@@ -38,7 +38,7 @@ const Item = ({ product, isItemDetail }) => {
             </Typography>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
-            <ItemQuantity itemName={name} itemImage={image} itemPrice={price} />
+            <ItemQuantity itemName={name} itemImage={image} itemPrice={price}  itemDescription={description} />
           </div>
           {isItemDetail ? <span></span> : <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Link to={`/item/${id}`}>
