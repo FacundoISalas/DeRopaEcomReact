@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import ItemQuantity from './ItemQuantity.jsx';
 
 const Item = ({ product, isItemDetail }) => {
-  const { name, image, description, price, id } = product;
+  const { name, image, description, price, stock, id } = product;
 
   return (
     <div style={{ height: '100%', marginTop: '25px' }}>
@@ -38,7 +38,7 @@ const Item = ({ product, isItemDetail }) => {
             </Typography>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '15px', marginBottom: '15px' }}>
-            <ItemQuantity itemName={name} itemImage={image} itemPrice={price}  itemDescription={description} />
+            <ItemQuantity itemName={name} itemImage={image} itemPrice={price}  itemDescription={description} itemId={id} itemStock = {stock} />
           </div>
           {isItemDetail ? <span></span> : <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Link to={`/item/${id}`}>
