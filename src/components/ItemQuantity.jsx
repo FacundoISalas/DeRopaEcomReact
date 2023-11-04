@@ -35,6 +35,11 @@ const ItemQuantity = ({ itemName, itemImage, itemPrice }) => {
         <TextField
           type="number"
           value={quantity}
+          InputProps={{
+            inputProps: {
+                style: { textAlign: "center" },
+            }
+        }}
           onChange={(e) => {
             const value = parseInt(e.target.value, 10);
             if (!isNaN(value) && value >= 0) {

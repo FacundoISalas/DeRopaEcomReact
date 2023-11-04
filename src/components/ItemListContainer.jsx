@@ -1,21 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ItemList from './ItemList';
+import { collection, getDocs, query, where, doc, getFirestore } from 'firebase/firestore';
 
 const ItemListContainer = ({ greetings }) => {
   const { categoryId } = useParams();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const apiUrl = categoryId
-      ? `https://fakestoreapi.com/products/category/${categoryId}`
-      : 'https://fakestoreapi.com/products';
+    const db = getFirestore();
+    const productsCollection = collection(db, 'items');
 
-    fetch(apiUrl)
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
-      });
+    const fetchAll = categoryId ? false : true;
+
+    if (fetchAll) {
+      getDocs(productsCollection)
+        .then((querySnapshot) => {
+          const productsData = [];
+          querySnapshot.forEach((doc) => {
+            productsData.push({ id: doc.id, ...doc.data() });
+          });
+          setProducts(productsData);
+        })
+        .catch((error) => {
+          console.error('Error fetching items:', error);
+        });
+    } else {
+      const categoryRef = doc(db, 'categories', categoryId);
+      const q = query(productsCollection, where('categoryRef', '==', categoryRef));
+      getDocs(q)
+        .then((querySnapshot) => {
+          const productsData = [];
+          querySnapshot.forEach((doc) => {
+            productsData.push({ id: doc.id, ...doc.data() });
+          });
+          setProducts(productsData);
+        })
+        .catch((error) => {
+          console.error('Error fetching items:', error);
+        });
+    }
   }, [categoryId]);
 
   return (
