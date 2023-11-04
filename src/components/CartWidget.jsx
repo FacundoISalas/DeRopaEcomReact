@@ -84,7 +84,7 @@ const CartWidget = () => {
           </Box>
           <Box display="flex" justifyContent="center" marginY={ 2 }>
           <Link to={`/checkout`}>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleCloseMenu}>
               Finalizar Compra
             </Button>
             </Link>

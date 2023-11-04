@@ -67,7 +67,6 @@ export const CartProvider = ({ children }) => {
   };
 
   const resetCart = () => {
-    console.log('enterresetchart');
     dispatch({ type: REMOVE_ALL_ITEMS });
   };
   

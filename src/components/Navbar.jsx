@@ -69,7 +69,7 @@ const Navbar = () => {
           onClose={handleMenuClose}
         >
           {categories.map((category) => (
-            <Link key={category.id} to={`/category/${category.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link onClick={handleMenuClose} key={category.id} to={`/category/${category.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <MenuItem>{category.name}</MenuItem>
             </Link>
           ))}

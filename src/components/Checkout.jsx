@@ -1,16 +1,21 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, TextField, Button, Typography, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Snackbar } from '@mui/material';
 import { CartContext } from '../contexts/CartContext';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 
 const Checkout = () => {
   const { cartItems, resetCart } = useContext(CartContext);
-
+  const navigate = useNavigate();
+  const handleSnackbarClose = () => {
+    navigate('/');
+  };
   const totalPrice = cartItems.reduce((total, item) => {
     return total + item.quantity * item.itemPrice;
   }, 0);
 
   const [nombre, setNombre] = useState('');
+  const [isPosting, setIsPosting] = useState(false);
   const [telefono, setTelefono] = useState('');
   const [email, setEmail] = useState('');
   const [nombreError, setNombreError] = useState('');
@@ -85,6 +90,7 @@ const Checkout = () => {
   }, [nombre, telefono, email, nombreError, telefonoError, emailError]);
 
   const handleConfirmOrder = () => {
+    setIsPosting(true);
     const order = {
         datosCliente: { name: nombre, telefono: telefono, email: email },
         datosCompra: setDatosCompra(cartItems),
@@ -93,8 +99,12 @@ const Checkout = () => {
     const db = getFirestore();
 
     const ordersCollection = collection(db, "orders");
-
-    addDoc(ordersCollection, order).then(({ response }) => console.log('postorder', response), resetCart());
+    addDoc(ordersCollection, order).then(() => {
+        setTimeout(() => {
+          resetCart();
+          setIsPosting(false);
+        }, 3100);
+      });
   };
 
   return (
@@ -161,16 +171,16 @@ const Checkout = () => {
             <Typography variant="h6" gutterBottom>
               Precio total: ${totalPrice}
             </Typography>
-            <Button variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled}>
+            <Button variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled || cartItems.length === 0}>
               Confirmar compra
             </Button>
-            {/* <Snackbar
-                open={purchaseCompleted}
+            <Snackbar
+                open={isPosting}
                 autoHideDuration={3000}
                 onClose={handleSnackbarClose}
             >
                 <Typography variant="body1">Su compra se ha procesado correctamente</Typography>
-            </Snackbar> */}
+            </Snackbar>
           </Paper>
         </Grid>
       </Grid>
