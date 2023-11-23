@@ -9,13 +9,11 @@ import { addDoc, collection, getFirestore, updateDoc, doc } from 'firebase/fires
 const Checkout = () => {
   const { cartItems, removeFromCart, resetCart } = useContext(CartContext);
   const navigate = useNavigate();
-  const handleSnackbarClose = () => {
-    navigate('/');
-  };
   const totalPrice = cartItems.reduce((total, item) => {
     return total + item.quantity * item.itemPrice;
   }, 0);
 
+  const [orderId, setOrderId] = useState(null);
   const [nombre, setNombre] = useState('');
   const [isPosting, setIsPosting] = useState(false);
   const [telefono, setTelefono] = useState('');
@@ -108,20 +106,50 @@ const Checkout = () => {
         const itemRef = doc(db, 'items', item.itemId);
         await updateDoc(itemRef, { stock: updatedStock });
       }
-      await addDoc(ordersCollection, order);
-  
-      setTimeout(() => {
+      const orderRef = await addDoc(ordersCollection, order);
+      if (orderRef) {
+        setOrderId(orderRef.id);
         resetCart();
-        setIsPosting(false);
-      }, 3100);
+        setTimeout(() => {
+          setIsPosting(false);
+        }, 5000);
+      }
     } catch (error) {
       console.error('Error al intentar actualizar los datos y añadir una nueva orden:', error);
       setIsPosting(false);
     }
   };
+  const continueNav = () => {
+    navigate('/');
+  };
 
   return (
     <div style={{ marginTop: '20px' }}>
+      { orderId ? 
+        <div>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12} md={12} lg={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <div style={{ textAlign: 'center' }}>
+                <Typography variant="h6">
+                  Su código de compra es: {orderId}
+                </Typography>
+                <LoadingButton style={{ marginTop: '10px', marginBottom: '10px' }} variant="contained" color="primary" onClick={continueNav}>
+                  Continuar
+                </LoadingButton>
+                <Snackbar
+                  open={isPosting}
+                  autoHideDuration={5000}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                >
+                  <Alert severity="success" sx={{ width: '100%' }}>
+                    Su compra se ha procesado correctamente, cuando haya verificado la misma presione continuar para volver al inicio.
+                  </Alert>
+                </Snackbar>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+      :
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <Paper elevation={3} style={{ padding: '16px' }}>
@@ -196,19 +224,10 @@ const Checkout = () => {
             <LoadingButton loading={isPosting}  variant="contained" color="primary" onClick={handleConfirmOrder} disabled={isDisabled || cartItems.length === 0 || isPosting}>
               Confirmar compra
             </LoadingButton>
-            <Snackbar
-              open={isPosting}
-              autoHideDuration={3000}
-              onClose={handleSnackbarClose}
-              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            >
-              <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-                Su compra se ha procesado correctamente, sera redirigo al inicio de la pagina.
-              </Alert>
-            </Snackbar>
           </Paper>
         </Grid>
       </Grid>
+    }
     </div>
   );
 };
