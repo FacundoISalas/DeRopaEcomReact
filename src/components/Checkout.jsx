@@ -101,7 +101,6 @@ const Checkout = () => {
   
     try {
       for (const item of cartItems) {
-        console.log('itemData', item);
         const updatedStock = item.itemStock - item.quantity;
         const itemRef = doc(db, 'items', item.itemId);
         await updateDoc(itemRef, { stock: updatedStock });
