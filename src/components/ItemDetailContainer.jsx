@@ -17,6 +17,7 @@ const ItemDetailContainer = () => {
         .then((docSnapshot) => {
           if (docSnapshot.exists()) {
             const data = docSnapshot.data();
+            data.id = docSnapshot.id;
             setProduct(data);
           } else {
             console.log("Item no encontrado");
